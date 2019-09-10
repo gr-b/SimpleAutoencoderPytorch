@@ -1,6 +1,6 @@
 import time
 import torch
-import torchvision as tv
+import torchvision
 # Datasets import module
 
 import torchvision.transforms as transforms
@@ -43,14 +43,15 @@ trainTransform = transforms.Compose([
 ###
 # Load Dataset
 ###
-trainSet = tv.datasets.CIFAR10(root='./data',
+trainSet = torchvision.datasets.CIFAR10(root='./data',
     train=True, download=True, transform=trainTransform)
 
-testSet = tv.datasets.CIFAR10(root='./data', train=False,
+testSet = torchvision.datasets.CIFAR10(root='./data', train=False,
     download=True, transform=testTransform)
 
-classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 
-            'horse', 'ship', 'truck')
+# For CIFAR10
+#classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 
+#            'horse', 'ship', 'truck')
 
 
 ### NOTE: shuffle=False ~~~~~~~~~~~~~~~~~~~
@@ -94,8 +95,6 @@ for epoch in range(num_epochs):
 		x_prime = model(x) # pass through into a reconstructed image
 		loss = lossFun(x_prime, x)
 
-		checkpoint(loss, model)
-
 		# Backward pass
 		optimizer.zero_grad() # Backward function accumulates gradients, so we don't want to mix up gradients. 
 				      # Set to zero instead.
@@ -108,6 +107,8 @@ for epoch in range(num_epochs):
 #######################
 # Testing
 #######################
+
+checkpoint(loss, model)
 
 images, labels = iter(testLoader).next()
 print(labels)
