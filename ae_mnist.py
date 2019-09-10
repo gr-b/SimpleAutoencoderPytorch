@@ -46,7 +46,7 @@ testLoader = torch.utils.data.DataLoader(
 # Training
 ##############################
 
-num_epochs = 5
+num_epochs = 50
 
 
 minLoss = 50
@@ -74,6 +74,7 @@ for epoch in range(num_epochs):
 
 		# Forward pass
 		x_prime = model(x) # pass through into a reconstructed image
+		x = x.view(-1, 28*28)		
 		loss = lossFun(x_prime, x)
 
 		# Backward pass
@@ -92,9 +93,11 @@ for epoch in range(num_epochs):
 checkpoint(loss, model)
 
 images, labels = iter(testLoader).next()
-print(labels)
+#print(labels)
 images = Variable(images).cuda()
 reconstructions = model(images)
+reconstructions = reconstructions.view(-1, 1, 28, 28)
+
 
 loss_value = lossFun(reconstructions, images)
 print("Loss Value:" + str(loss_value))
@@ -108,8 +111,8 @@ def show(image):
 
 def show2(image1, image2):
 	f, axes = plt.subplots(1, 2)
-	axes[0].imshow(image1.numpy()[0])
-	axes[1].imshow(image2.numpy()[0])
+	axes[0].imshow(image1.numpy()[0], cmap='gray')
+	axes[1].imshow(image2.numpy()[0], cmap='gray')
 	plt.show()
 
 x  = images[0]

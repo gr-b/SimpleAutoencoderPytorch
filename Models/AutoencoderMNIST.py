@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-
+bottleneck_size = 10
 
 class AutoencoderMNIST(nn.Module):
 
@@ -13,33 +13,31 @@ class AutoencoderMNIST(nn.Module):
         self.create_decoder()
 
     def create_encoder(self):
-        self.conv1 = nn.Conv2d(1, 10, kernel_size=3) # Out: (10x26x26)
-        self.conv2 = nn.Conv2d(10, 20, kernel_size=3) # Out: (20x24x24)
-        #self.conv2_drop = nn.Dropout2d()
-        self.fc1 = nn.Linear(320, 50)
-        self.fc2 = nn.Linear(50, 10)
+        self.fc1 = nn.Linear(784, 512)
+        self.fc2 = nn.Linear(512, 128)
+        self.fc3 = nn.Linear(128, 64)
+        self.fc4 = nn.Linear(64, bottleneck_size)
 
     def forward_encoder(self, x):
-        x = F.relu(self.conv1(x))
-        x = F.relu(self.conv2(x)) # Add maxpool2d layers?
-        x = x.view(-1, 320)
+        x = x.view(-1, 28*28)        
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
+        x = F.relu(self.fc3(x))
+        x = self.fc4(x)  # Linear activation
         return x
 
     def create_decoder(self):
-        self.d_fc1 = nn.Linear(10, 50)
-        self.d_fc2 = nn.Linear(50, 320)
-        self.d_convt1 = nn.ConvTranspose2d(20, 10, kernel_size=3)
-        self.d_convt2 = nn.ConvTranspose2d(10, 1, kernel_size=3)
-        self.d_sig   = nn.Sigmoid()
+        self.d_fc1 = nn.Linear(bottleneck_size, 64)
+        self.d_fc2 = nn.Linear(64, 128)
+        self.d_fc3 = nn.Linear(128, 512)
+        self.d_fc4 = nn.Linear(512, 784)
+        self.d_sig = nn.Sigmoid()
 
     def forward_decoder(self, z):
         x = F.relu(self.d_fc1(z))
         x = F.relu(self.d_fc2(x))
-        x = x.view(-1, 20, 24, 24)
-        x = F.relu(self.d_convt1(x))
-        x = F.relu(self.d_convt2(x))
+        x = F.relu(self.d_fc3(x))
+        x = F.relu(self.d_fc4(x))
         x = self.d_sig(x)
         return x
 
