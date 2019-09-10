@@ -4,10 +4,10 @@ import torch.nn.functional as F
 
 
 
-class Autoencoder(nn.Module):
+class AutoencoderCIFAR(nn.Module):
 
     def __init__(self):
-        super(Autoencoder, self).__init__()
+        super(AutoencoderCIFAR, self).__init__()
 
         self.encoder = self.createEncoder()
         self.decoder = self.createDecoder()
