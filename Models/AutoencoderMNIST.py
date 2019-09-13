@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-bottleneck_size = 10
+bottleneck_size = 2
 
 class AutoencoderMNIST(nn.Module):
 
