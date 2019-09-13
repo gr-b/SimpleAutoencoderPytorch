@@ -29,18 +29,18 @@ batch_size_test = 1000
 trainLoader = torch.utils.data.DataLoader(
 	torchvision.datasets.MNIST('./data', train=True, download=True,
 		transform=torchvision.transforms.Compose([
-			torchvision.transforms.ToTensor(),
-			torchvision.transforms.Normalize(
-				(0.1307,), (0.3081,)) # Precomputed statistic for normalization
+			torchvision.transforms.ToTensor()
+			#torchvision.transforms.Normalize(
+		#		(0.1307,), (0.3081,)) # Precomputed statistic for normalization
 		])),
 	batch_size=batch_size, shuffle=True)
 
 testLoader = torch.utils.data.DataLoader(
 	torchvision.datasets.MNIST('./data', train=False, download=True,
 		transform=torchvision.transforms.Compose([
-			torchvision.transforms.ToTensor(),
-			torchvision.transforms.Normalize(
-				(0.1307,), (0.3081,))
+			torchvision.transforms.ToTensor()
+			#torchvision.transforms.Normalize(
+			#	(0.1307,), (0.3081,))
 		])),
 	batch_size=batch_size_test, shuffle=True)
 
@@ -81,6 +81,7 @@ if os.path.exists('./checkpoints/model.pt'):
 
 	exit()
 
+
 num_epochs = 5
 
 
@@ -94,7 +95,8 @@ def checkpoint(loss, model):
 model = Autoencoder().cuda()
 
 # We are using a Sigmoid layer at the end so we must use CE loss. Why?
-lossFun = nn.MSELoss()#nn.CrossEntropyLoss()
+# ---> Rather, paper said to use CE loss.
+lossFun = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), weight_decay=1e-5)
 
 

@@ -37,7 +37,7 @@ class AutoencoderMNIST(nn.Module):
         x = F.relu(self.d_fc1(z))
         x = F.relu(self.d_fc2(x))
         x = F.relu(self.d_fc3(x))
-        x = F.relu(self.d_fc4(x))
+        x = self.d_fc4(x) # No ReLU on last laye: Sigmoid(ReLU(x)) learns to be either 0.5 or 1 exactly.
         x = self.d_sig(x)
         return x
 
