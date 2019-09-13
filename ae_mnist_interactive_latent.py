@@ -28,20 +28,13 @@ batch_size_test = 1000
 
 trainLoader = torch.utils.data.DataLoader(
 	torchvision.datasets.MNIST('./data', train=True, download=True,
-		transform=torchvision.transforms.Compose([
-			torchvision.transforms.ToTensor()
-			#torchvision.transforms.Normalize(
-		#		(0.1307,), (0.3081,)) # Precomputed statistic for normalization
-		])),
+		transform=torchvision.transforms.ToTensor()),
+		# Usually would do a normalize, but for some reason this messes up the output
 	batch_size=batch_size, shuffle=True)
 
 testLoader = torch.utils.data.DataLoader(
 	torchvision.datasets.MNIST('./data', train=False, download=True,
-		transform=torchvision.transforms.Compose([
-			torchvision.transforms.ToTensor()
-			#torchvision.transforms.Normalize(
-			#	(0.1307,), (0.3081,))
-		])),
+		transform=torchvision.transforms.ToTensor()),
 	batch_size=batch_size_test, shuffle=True)
 
 
@@ -82,7 +75,7 @@ if os.path.exists('./checkpoints/model.pt'):
 	exit()
 
 
-num_epochs = 5
+num_epochs = 50
 
 
 minLoss = 50
@@ -147,15 +140,22 @@ def show(image):
 	plt.show()
 
 def show2(image1, image2):
-	f, axes = plt.subplots(1, 2)
-	axes[0].imshow(image1.numpy()[0], cmap='gray')
-	axes[1].imshow(image2.numpy()[0], cmap='gray')
+	f, axes = plt.subplots(10, 2)
+	axes[0,0].imshow(image1.numpy()[0], cmap='gray')
+	axes[0,1].imshow(image2.numpy()[0], cmap='gray')
 	plt.show()
 
-x  = images[0]
-x_ = reconstructions[0]
+def show10(images1, images2):
+	f, axes = plt.subplots(10, 2)
+	for i in range(10):
+		axes[i,0].imshow(images1.numpy()[i][0], cmap='gray')
+		axes[i,1].imshow(images2.numpy()[i][0], cmap='gray')
+	plt.show()
 
-show2(x.cpu(), x_.cpu().detach())
+x  = images
+x_ = reconstructions
+
+show10(x.cpu(), x_.cpu().detach())
 
 
 
