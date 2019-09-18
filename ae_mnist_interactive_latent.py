@@ -39,7 +39,7 @@ testLoader = torch.utils.data.DataLoader(
 
 
 ##############################
-# Training
+# Interactive Plot
 ##############################
 
 if os.path.exists('./checkpoints/model.pt'):
@@ -78,6 +78,10 @@ if os.path.exists('./checkpoints/model.pt'):
 num_epochs = 50
 
 
+##############################
+# Checkpointing - Create a folder called `checkpoints`
+##############################
+
 minLoss = 50
 def checkpoint(loss, model):
 	global minLoss
@@ -85,6 +89,12 @@ def checkpoint(loss, model):
 		minLoss = loss
 		torch.save(model, './checkpoints/model.pt')
 
+		
+		
+##############################
+# Training
+##############################
+	
 model = Autoencoder().cuda()
 
 # We are using a Sigmoid layer at the end so we must use CE loss. Why?
